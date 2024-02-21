@@ -1,0 +1,10 @@
+{
+	"id": "unspellcheck-links",
+	"name": "Unspellcheck Links",
+	"version": "1.0.1",
+	"minAppVersion": "1.5.3",
+	"description": "Removes spellcheck highlights from external and internal links while in edit mode.",
+	"author": "Julian Szachowicz",
+	"authorUrl": "https://github.com/julzerinos",
+	"isDesktopOnly": false
+}
