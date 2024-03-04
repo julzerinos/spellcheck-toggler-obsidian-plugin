@@ -6,13 +6,13 @@ import {
     externalLinkSpellcheckViewPlugin,
 } from './spellchecks/links'
 import {
-    SpellcheckConfiguratorSettingTab,
-    SpellcheckConfiguratorSettings,
+    SpellcheckTogglerSettingTab,
+    SpellcheckTogglerSettings,
     defaultSettings,
 } from './settings'
 
-export class SpellcheckConfiguratorPlugin extends Plugin {
-    settings: SpellcheckConfiguratorSettings
+export class SpellcheckTogglerPlugin extends Plugin {
+    settings: SpellcheckTogglerSettings
     editorExtensions: Extension[] = []
 
     async loadSettings() {
@@ -22,7 +22,7 @@ export class SpellcheckConfiguratorPlugin extends Plugin {
             await this.loadData(),
         )
     }
-    async saveSettings(settings: Partial<SpellcheckConfiguratorSettings>) {
+    async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
         this.settings = { ...this.settings, ...settings }
         this.refreshExtensions()
         await this.saveData(this.settings)
@@ -44,7 +44,7 @@ export class SpellcheckConfiguratorPlugin extends Plugin {
 
     async onload(): Promise<void> {
         await this.loadSettings()
-        this.addSettingTab(new SpellcheckConfiguratorSettingTab(this.app, this))
+        this.addSettingTab(new SpellcheckTogglerSettingTab(this.app, this))
 
         this.buildExtensions()
         this.registerEditorExtension(this.editorExtensions)

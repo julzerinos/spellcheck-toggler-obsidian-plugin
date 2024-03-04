@@ -1,21 +1,21 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 
-import { SpellcheckConfiguratorPlugin } from './plugin'
+import { SpellcheckTogglerPlugin } from './plugin'
 
-export interface SpellcheckConfiguratorSettings {
+export interface SpellcheckTogglerSettings {
     spellcheckExternalLinks: boolean
     spellcheckInternalLinks: boolean
 }
 
-export const defaultSettings: SpellcheckConfiguratorSettings = {
+export const defaultSettings: SpellcheckTogglerSettings = {
     spellcheckExternalLinks: false,
     spellcheckInternalLinks: false,
 }
 
-export class SpellcheckConfiguratorSettingTab extends PluginSettingTab {
-    plugin: SpellcheckConfiguratorPlugin
+export class SpellcheckTogglerSettingTab extends PluginSettingTab {
+    plugin: SpellcheckTogglerPlugin
 
-    constructor(app: App, plugin: SpellcheckConfiguratorPlugin) {
+    constructor(app: App, plugin: SpellcheckTogglerPlugin) {
         super(app, plugin)
         this.plugin = plugin
     }

@@ -1,1 +1,1 @@
-export { SpellcheckConfiguratorPlugin as default } from 'src/plugin'
+export { SpellcheckTogglerPlugin as default } from 'src/plugin'
