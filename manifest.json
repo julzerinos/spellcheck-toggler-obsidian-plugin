@@ -1,9 +1,9 @@
 {
-	"id": "unspellcheck-links",
-	"name": "Unspellcheck Links",
-	"version": "1.0.1",
+	"id": "spellcheck-configurator",
+	"name": "Spellcheck Configurator",
+	"version": "1.0.0",
 	"minAppVersion": "1.5.3",
-	"description": "Removes spellcheck highlights from external and internal links while in edit mode.",
+	"description": "A plugin for Obsidian which gives you more control over the red underline spellcheck behaviour.",
 	"author": "Julian Szachowicz",
 	"authorUrl": "https://github.com/julzerinos",
 	"isDesktopOnly": false
