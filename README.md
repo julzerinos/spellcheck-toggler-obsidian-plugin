@@ -10,3 +10,4 @@ If you spend most of your time in the editing view and find yourself annoyed by 
 
 ### Examples
 
+![](https://github.com/julzerinos/spellcheck-toggler-obsidian-plugin/blob/assets/example.png?raw=true)
