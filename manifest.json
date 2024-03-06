@@ -3,7 +3,7 @@
 	"name": "Spellcheck Toggler",
 	"version": "1.0.0",
 	"minAppVersion": "1.5.3",
-	"description": "A plugin for Obsidian which gives you more control over the red underline spellcheck behaviour.",
+	"description": "Toggle spellchecking for types of text blocks in the editing view.",
 	"author": "Julian Szachowicz",
 	"authorUrl": "https://github.com/julzerinos",
 	"isDesktopOnly": false

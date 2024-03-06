@@ -15,3 +15,9 @@ Originally created to disable spellcheck underlining for links in the editing vi
 ### Examples
 
 ![](https://github.com/julzerinos/spellcheck-toggler-obsidian-plugin/blob/assets/example.png?raw=true)
+
+
+### Settings
+
+- "Enable spellcheck for external links" - enable the spellcheck behaviour for external links (default: off)
+- "Enable spellcheck for internal links" - enable the spellcheck behaviour for internal links (default: off)
