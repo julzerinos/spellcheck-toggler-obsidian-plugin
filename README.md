@@ -14,7 +14,7 @@ Originally created to disable spellcheck underlining for links in the editing vi
 
 ### Examples
 
-![](https://github.com/julzerinos/spellcheck-toggler-obsidian-plugin/blob/assets/example.png?raw=true)
+![](https://github.com/julzerinos/spellcheck-toggler-obsidian-plugin/blob/assets/example1.png?raw=true)
 
 
 ### Settings
