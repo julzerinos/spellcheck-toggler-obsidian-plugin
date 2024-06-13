@@ -2,15 +2,15 @@ import { Plugin } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
-    internalLinkSpellcheckViewPlugin,
-    externalLinkSpellcheckViewPlugin,
-} from './spellchecks/links'
-import {
     SpellcheckTogglerSettingTab,
     SpellcheckTogglerSettings,
     defaultSettings,
 } from './settings'
-import { htmlCommentSpellcheckPluginValue } from './spellchecks/html'
+import {
+    externalLinkSpellcheckViewPlugin,
+    htmlCommentSpellcheckPluginValue,
+    internalLinkSpellcheckViewPlugin,
+} from './spellchecks'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -23,7 +23,7 @@ export class SpellcheckTogglerPlugin extends Plugin {
             await this.loadData(),
         )
     }
-    
+
     async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
         this.settings = { ...this.settings, ...settings }
         this.refreshExtensions()
