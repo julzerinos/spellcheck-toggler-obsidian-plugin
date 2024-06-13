@@ -8,7 +8,9 @@ Originally created to disable spellcheck underlining for links in the editing vi
 
 ### Features
 
-- Link toggles - toggle spellchecks for internal and external link texts.
+- Feature toggles
+    - Toggle spellchecking for internal and external link text
+    - Toggle spellchecking for html comments
 - Modules - each toggle can be controlled from the plugin setting tab to customize for your use case.
 - Open to requests - you can create an issue to request spellcheck toggling for a specific type of block.
 
@@ -21,3 +23,4 @@ Originally created to disable spellcheck underlining for links in the editing vi
 
 - "Enable spellcheck for external links" - enable the spellcheck behaviour for external links (default: off)
 - "Enable spellcheck for internal links" - enable the spellcheck behaviour for internal links (default: off)
+- "Enable spellcheck for html comments" - enable the spellcheck behaviour for html comments (default: on)

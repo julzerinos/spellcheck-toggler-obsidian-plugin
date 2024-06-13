@@ -5,11 +5,13 @@ import { SpellcheckTogglerPlugin } from './plugin'
 export interface SpellcheckTogglerSettings {
     spellcheckExternalLinks: boolean
     spellcheckInternalLinks: boolean
+    spellcheckHtmlComments: boolean
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
     spellcheckExternalLinks: false,
     spellcheckInternalLinks: false,
+    spellcheckHtmlComments: true,
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
@@ -50,6 +52,21 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                     .onChange((value) =>
                         this.plugin.saveSettings({
                             spellcheckInternalLinks: value,
+                        }),
+                    ),
+            )
+
+        new Setting(containerEl)
+            .setName('Enable spellcheck for html comments')
+            .setDesc(
+                'Toggle spellcheck underline for any text inside an html comment block.',
+            )
+            .addToggle((toggle) =>
+                toggle
+                    .setValue(this.plugin.settings.spellcheckHtmlComments)
+                    .onChange((value) =>
+                        this.plugin.saveSettings({
+                            spellcheckHtmlComments: value,
                         }),
                     ),
             )
