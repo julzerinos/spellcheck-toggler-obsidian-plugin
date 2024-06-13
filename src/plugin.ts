@@ -23,6 +23,7 @@ export class SpellcheckTogglerPlugin extends Plugin {
             await this.loadData(),
         )
     }
+    
     async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
         this.settings = { ...this.settings, ...settings }
         this.refreshExtensions()
@@ -38,8 +39,10 @@ export class SpellcheckTogglerPlugin extends Plugin {
         if (!this.settings.spellcheckExternalLinks)
             this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
 
-        this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
+        if (!this.settings.spellcheckHtmlComments)
+            this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
     }
+
     refreshExtensions() {
         this.buildExtensions()
         this.app.workspace.updateOptions()
