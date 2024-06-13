@@ -10,6 +10,7 @@ import {
     SpellcheckTogglerSettings,
     defaultSettings,
 } from './settings'
+import { htmlCommentSpellcheckPluginValue } from './spellchecks/html'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -36,6 +37,8 @@ export class SpellcheckTogglerPlugin extends Plugin {
 
         if (!this.settings.spellcheckExternalLinks)
             this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
+
+        this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
     }
     refreshExtensions() {
         this.buildExtensions()
