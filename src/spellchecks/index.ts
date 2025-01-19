@@ -1,5 +1,3 @@
-export { htmlCommentSpellcheckPluginValue } from './html'
-export {
-    externalLinkSpellcheckViewPlugin,
-    internalLinkSpellcheckViewPlugin,
-} from './links'
+export { htmlCommentSpellcheckPluginValue } from './html-comments'
+export { externalLinkSpellcheckViewPlugin } from './external-links'
+export { internalLinkSpellcheckViewPlugin } from './internal-links'

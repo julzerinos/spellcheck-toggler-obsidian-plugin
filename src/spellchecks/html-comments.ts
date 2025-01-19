@@ -1,7 +1,7 @@
 import { ViewPlugin } from '@codemirror/view'
 import { SyntaxNodeRef } from '@lezer/common'
 
-import { ApplySpellcheckAttributePluginValue } from "./logic"
+import { ApplySpellcheckAttributePluginValue } from "./apply-spellcheck-plugin"
 
 class HtmlCommentSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
     public isNodeEligible(node: SyntaxNodeRef): boolean {
