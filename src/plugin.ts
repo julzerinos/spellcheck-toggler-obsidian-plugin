@@ -22,8 +22,7 @@ export class SpellcheckTogglerPlugin extends Plugin {
     onFileOpenEventRef: EventRef
 
     async loadSettings() {
-        const userSettings: SpellcheckTogglerSettings =
-            validateAndMigrateSettings(await this.loadData())
+        const userSettings = validateAndMigrateSettings(await this.loadData())
         this.settings = { ...defaultSettings, ...userSettings }
 
         this.saveData(this.settings)
