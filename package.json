@@ -1,6 +1,6 @@
 {
     "name": "obsidian-spellcheck-toggler",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "A plugin for Obsidian which gives you more control over the red underline spellcheck behaviour.",
     "main": "main.js",
     "scripts": {
