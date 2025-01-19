@@ -1,16 +1,18 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 import { SpellcheckTogglerPlugin } from './plugin'
 
-enum SpellcheckBehaviourOption {
+export enum SpellcheckBehaviourOption {
     DEFAULT = 'default',
-    FRONTMATTER = 'frontmatter',
+    OPT_IN = 'opt-in',
+    OPT_OUT = 'opt-out',
     GLOBAL = 'global',
 }
 
 const SpellcheckBehaviourOptionDisplay = {
     [SpellcheckBehaviourOption.DEFAULT]: 'Always spellcheck',
-    [SpellcheckBehaviourOption.FRONTMATTER]: 'Opt-out spellcheck',
-    [SpellcheckBehaviourOption.GLOBAL]: 'Opt-in spellcheck',
+    [SpellcheckBehaviourOption.OPT_IN]: 'Opt-in disable',
+    [SpellcheckBehaviourOption.OPT_OUT]: 'Opt-out disable',
+    [SpellcheckBehaviourOption.GLOBAL]: 'Never spellcheck',
 }
 
 export interface SpellcheckOption {
@@ -98,8 +100,10 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
 
             frontmatterOverrideTextSetting.settingEl.toggleClass(
                 'hidden',
-                this.plugin.settings[optionsKey].behaviour ===
+                [
                     SpellcheckBehaviourOption.DEFAULT,
+                    SpellcheckBehaviourOption.GLOBAL,
+                ].includes(this.plugin.settings[optionsKey].behaviour),
             )
 
             behaviourDropdownSetting.addDropdown((dropdown) => {
@@ -113,7 +117,10 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                     })
                     frontmatterOverrideTextSetting.settingEl.toggleClass(
                         'hidden',
-                        behaviour === SpellcheckBehaviourOption.DEFAULT,
+                        [
+                            SpellcheckBehaviourOption.DEFAULT,
+                            SpellcheckBehaviourOption.GLOBAL,
+                        ].includes(this.plugin.settings[optionsKey].behaviour),
                     )
                 })
                 dropdown.setValue(this.plugin.settings[optionsKey].behaviour)
@@ -125,73 +132,49 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
         })
         new Setting(legendContainer)
             .setHeading()
-            .setName('Settings legend')
-            .setDesc('...')
+            .setName('Spellcheck toggler settings')
+            .setDesc(
+                'Configure spellchecking options. The behaviour of a spellcheck option is defined as follows:',
+            )
+
+        const list = legendContainer.createEl('ul')
+
+        list.createEl('li', {
+            text: `     "Always spellcheck": the editor default behaviour will be applied (the plugin is not active for the option).`,
+            cls: 'setting-item-target-label',
+        })
+        list.createEl('li', {
+            text: `     "Opt-in disable": explicitly use the defined frontmatter override property to disable spellchecking in applicable files, otherwise in files without the property apply the editor default (spellcheck) for the option.`,
+            cls: 'setting-item-target-label',
+        })
+        list.createEl('li', {
+            text: `     "Opt-out disable": explicitly use the defined frontmatter override property to enable spellchecking in applicable files, otherwise in files without the property do not spellcheck the option.`,
+            cls: 'setting-item-target-label',
+        })
+        list.createEl('li', {
+            text: `     "Never spellcheck": do not use spellcheck in any file for the option.`,
+            cls: 'setting-item-target-label',
+        })
 
         createSpellcheckOptionDisplay(
             'externalLinks',
-            'Disable spellcheck for external links',
+            'External links option',
             'Toggle spellcheck underline for link text in any external link.',
             '![text](link)',
         )
 
         createSpellcheckOptionDisplay(
             'internalLinks',
-            'Disable spellcheck for internal links',
+            'Internal links option',
             'Toggle spellcheck underline for link text in any internal link.',
             '[[ link text ]]',
         )
 
         createSpellcheckOptionDisplay(
             'htmlComments',
-            'Disable spellcheck for html links',
+            'Html comment option',
             'Toggle spellcheck underline for any text inside an html comment block.',
             '<-- text -->',
         )
-
-        // new Setting(containerEl)
-        //     .setName('Enable spellcheck for external links')
-        //     .setDesc(
-        //         'Toggle spellcheck underline for link text in any external link.',
-        //     )
-        //     .addToggle((toggle) =>
-        //         toggle
-        //             .setValue(this.plugin.settings.spellcheckExternalLinks)
-        //             .onChange((value) =>
-        //                 this.plugin.saveSettings({
-        //                     spellcheckExternalLinks: value,
-        //                 }),
-        //             ),
-        //     )
-
-        // new Setting(containerEl)
-        //     .setName('Enable spellcheck for internal links')
-        //     .setDesc(
-        //         'Toggle spellcheck underline for link text for in any internal link.',
-        //     )
-        //     .addToggle((toggle) =>
-        //         toggle
-        //             .setValue(this.plugin.settings.spellcheckInternalLinks)
-        //             .onChange((value) =>
-        //                 this.plugin.saveSettings({
-        //                     spellcheckInternalLinks: value,
-        //                 }),
-        //             ),
-        //     )
-
-        // new Setting(containerEl)
-        //     .setName('Enable spellcheck for html comments')
-        //     .setDesc(
-        //         'Toggle spellcheck underline for any text inside an html comment block.',
-        //     )
-        //     .addToggle((toggle) =>
-        //         toggle
-        //             .setValue(this.plugin.settings.spellcheckHtmlComments)
-        //             .onChange((value) =>
-        //                 this.plugin.saveSettings({
-        //                     spellcheckHtmlComments: value,
-        //                 }),
-        //             ),
-        //     )
     }
 }

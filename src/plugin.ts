@@ -2,6 +2,7 @@ import { EventRef, Plugin, TFile } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
+    SpellcheckBehaviourOption,
     SpellcheckOption,
     SpellcheckTogglerSettingTab,
     SpellcheckTogglerSettings,
@@ -12,6 +13,7 @@ import {
     htmlCommentSpellcheckPluginValue,
     internalLinkSpellcheckViewPlugin,
 } from './spellchecks'
+import { updateSpellcheckContext } from './context'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -21,41 +23,53 @@ export class SpellcheckTogglerPlugin extends Plugin {
     async loadSettings() {
         const userSettings: SpellcheckTogglerSettings = await this.loadData()
         this.settings = { ...defaultSettings, ...userSettings }
+
+        updateSpellcheckContext({ settings: this.settings })
     }
 
     async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
         this.settings = { ...this.settings, ...settings }
-        this.refreshExtensions()
         await this.saveData(this.settings)
+
+        this.refreshExtensions()
+        updateSpellcheckContext({ settings: this.settings })
     }
 
     buildExtensions() {
         this.editorExtensions.length = 0
 
-        if (!this.settings.internalLinks)
+        if (
+            this.settings.internalLinks.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(internalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.externalLinks)
+        if (
+            this.settings.externalLinks.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.htmlComments)
+        if (
+            this.settings.htmlComments.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
     }
 
     refreshExtensions() {
         this.buildExtensions()
         this.app.workspace.updateOptions()
+        this.app.workspace.activeEditor?.editor?.refresh()
     }
 
     onFileOpen(file: TFile | null) {
-        if (!file) return
+        if (file === null) return
 
-        const frontmatter =
-            this.app.metadataCache.getFileCache(file)?.frontmatter
-
-        console.log(frontmatter)
-
-        // updateSpellcheckContext({ currentFrontmatter: frontmatter ?? null })
+        updateSpellcheckContext({
+            file,
+            frontmatter: this.app.metadataCache.getFileCache(file)?.frontmatter,
+        })
     }
 
     async onload(): Promise<void> {
@@ -65,6 +79,7 @@ export class SpellcheckTogglerPlugin extends Plugin {
         this.buildExtensions()
         this.registerEditorExtension(this.editorExtensions)
 
+        this.onFileOpen(this.app.workspace.getActiveFile())
         this.onFileOpenEventRef = this.app.workspace.on(
             'file-open',
             this.onFileOpen.bind(this),

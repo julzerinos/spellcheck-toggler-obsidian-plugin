@@ -1,12 +1,13 @@
 import { ViewPlugin } from '@codemirror/view'
-import { SyntaxNodeRef } from '@lezer/common'
 
 import { ApplySpellcheckAttributePluginValue } from './apply-spellcheck-plugin'
+import {
+    SpellcheckTogglerSettings,
+} from 'src/settings'
 
 class InternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    public isNodeEligible(node: SyntaxNodeRef): boolean {
-        return node.type.name.startsWith('hmd-internal-link')
-    }
+    protected nodeName: string = 'hmd-internal-link'
+    protected settingsKey: keyof SpellcheckTogglerSettings = 'internalLinks'
 }
 
 export const internalLinkSpellcheckViewPlugin = ViewPlugin.fromClass(
