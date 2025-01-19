@@ -1,7 +1,8 @@
-import { Plugin } from 'obsidian'
+import { EventRef, Plugin, TFile } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
+    SpellcheckOption,
     SpellcheckTogglerSettingTab,
     SpellcheckTogglerSettings,
     defaultSettings,
@@ -15,13 +16,11 @@ import {
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
     editorExtensions: Extension[] = []
+    onFileOpenEventRef: EventRef
 
     async loadSettings() {
-        this.settings = Object.assign(
-            {},
-            defaultSettings,
-            await this.loadData(),
-        )
+        const userSettings: SpellcheckTogglerSettings = await this.loadData()
+        this.settings = { ...defaultSettings, ...userSettings }
     }
 
     async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
@@ -33,13 +32,13 @@ export class SpellcheckTogglerPlugin extends Plugin {
     buildExtensions() {
         this.editorExtensions.length = 0
 
-        if (!this.settings.spellcheckInternalLinks)
+        if (!this.settings.internalLinks)
             this.editorExtensions.push(internalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.spellcheckExternalLinks)
+        if (!this.settings.externalLinks)
             this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.spellcheckHtmlComments)
+        if (!this.settings.htmlComments)
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
     }
 
@@ -48,11 +47,32 @@ export class SpellcheckTogglerPlugin extends Plugin {
         this.app.workspace.updateOptions()
     }
 
+    onFileOpen(file: TFile | null) {
+        if (!file) return
+
+        const frontmatter =
+            this.app.metadataCache.getFileCache(file)?.frontmatter
+
+        console.log(frontmatter)
+
+        // updateSpellcheckContext({ currentFrontmatter: frontmatter ?? null })
+    }
+
     async onload(): Promise<void> {
         await this.loadSettings()
         this.addSettingTab(new SpellcheckTogglerSettingTab(this.app, this))
 
         this.buildExtensions()
         this.registerEditorExtension(this.editorExtensions)
+
+        this.onFileOpenEventRef = this.app.workspace.on(
+            'file-open',
+            this.onFileOpen.bind(this),
+        )
+    }
+
+    unload(): void {
+        this.app.workspace.offref(this.onFileOpenEventRef)
+        super.unload()
     }
 }
