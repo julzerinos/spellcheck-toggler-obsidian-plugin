@@ -6,8 +6,12 @@ import {
 type schema1_2_0 = SpellcheckTogglerSettings
 type currentSchema = schema1_2_0
 
-export const validateAndMigrateSettings = (settings: any): currentSchema => {
+export const validateAndMigrateSettings = (
+    settings: any,
+): Partial<currentSchema> => {
     const migratedOutput: Partial<currentSchema> = {}
+
+    if (settings === null) return {}
 
     // From 1.1.0 to 1.2.0
     const keys1_1_0ToKeys1_2_0 = {
