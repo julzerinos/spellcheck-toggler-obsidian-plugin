@@ -24,12 +24,14 @@ export interface SpellcheckTogglerSettings {
     externalLinks: SpellcheckOption
     internalLinks: SpellcheckOption
     htmlComments: SpellcheckOption
+    anyNode: SpellcheckOption
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
     externalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
@@ -175,6 +177,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             'Html comment option',
             'Toggle spellcheck underline for any text inside an html comment block.',
             '<-- text -->',
+        )
+
+        createSpellcheckOptionDisplay(
+            'anyNode',
+            'Any text node option',
+            'Toggle spellcheck for any text node type. Recommended use with "Opt-in disable" behaviour to target specifc files. With the "Never spellcheck" behaviour, this option will disable spellcheck for all text in every file.',
+            '*',
         )
     }
 }
