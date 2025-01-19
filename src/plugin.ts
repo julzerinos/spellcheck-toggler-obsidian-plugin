@@ -14,6 +14,7 @@ import {
     internalLinkSpellcheckViewPlugin,
 } from './spellchecks'
 import { updateSpellcheckContext } from './context'
+import { validateAndMigrateSettings } from './migration'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -21,8 +22,11 @@ export class SpellcheckTogglerPlugin extends Plugin {
     onFileOpenEventRef: EventRef
 
     async loadSettings() {
-        const userSettings: SpellcheckTogglerSettings = await this.loadData()
+        const userSettings: SpellcheckTogglerSettings =
+            validateAndMigrateSettings(await this.loadData())
         this.settings = { ...defaultSettings, ...userSettings }
+
+        this.saveData(this.settings)
 
         updateSpellcheckContext({ settings: this.settings })
     }
