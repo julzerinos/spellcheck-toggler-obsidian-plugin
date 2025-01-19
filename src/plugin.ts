@@ -1,7 +1,9 @@
-import { Plugin } from 'obsidian'
+import { EventRef, Plugin, TFile } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
+    SpellcheckBehaviourOption,
+    SpellcheckOption,
     SpellcheckTogglerSettingTab,
     SpellcheckTogglerSettings,
     defaultSettings,
@@ -11,41 +13,67 @@ import {
     htmlCommentSpellcheckPluginValue,
     internalLinkSpellcheckViewPlugin,
 } from './spellchecks'
+import { updateSpellcheckContext } from './context'
+import { validateAndMigrateSettings } from './migration'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
     editorExtensions: Extension[] = []
+    onFileOpenEventRef: EventRef
 
     async loadSettings() {
-        this.settings = Object.assign(
-            {},
-            defaultSettings,
-            await this.loadData(),
-        )
+        const userSettings: SpellcheckTogglerSettings =
+            validateAndMigrateSettings(await this.loadData())
+        this.settings = { ...defaultSettings, ...userSettings }
+
+        this.saveData(this.settings)
+
+        updateSpellcheckContext({ settings: this.settings })
     }
 
     async saveSettings(settings: Partial<SpellcheckTogglerSettings>) {
         this.settings = { ...this.settings, ...settings }
-        this.refreshExtensions()
         await this.saveData(this.settings)
+
+        this.refreshExtensions()
+        updateSpellcheckContext({ settings: this.settings })
     }
 
     buildExtensions() {
         this.editorExtensions.length = 0
 
-        if (!this.settings.spellcheckInternalLinks)
+        if (
+            this.settings.internalLinks.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(internalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.spellcheckExternalLinks)
+        if (
+            this.settings.externalLinks.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
 
-        if (!this.settings.spellcheckHtmlComments)
+        if (
+            this.settings.htmlComments.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
     }
 
     refreshExtensions() {
         this.buildExtensions()
         this.app.workspace.updateOptions()
+        this.app.workspace.activeEditor?.editor?.refresh()
+    }
+
+    onFileOpen(file: TFile | null) {
+        if (file === null) return
+
+        updateSpellcheckContext({
+            file,
+            frontmatter: this.app.metadataCache.getFileCache(file)?.frontmatter,
+        })
     }
 
     async onload(): Promise<void> {
@@ -54,5 +82,16 @@ export class SpellcheckTogglerPlugin extends Plugin {
 
         this.buildExtensions()
         this.registerEditorExtension(this.editorExtensions)
+
+        this.onFileOpen(this.app.workspace.getActiveFile())
+        this.onFileOpenEventRef = this.app.workspace.on(
+            'file-open',
+            this.onFileOpen.bind(this),
+        )
+    }
+
+    unload(): void {
+        this.app.workspace.offref(this.onFileOpenEventRef)
+        super.unload()
     }
 }
