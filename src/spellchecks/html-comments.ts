@@ -1,11 +1,17 @@
 import { ViewPlugin } from '@codemirror/view'
+import { SyntaxNodeRef } from '@lezer/common'
 
-import { ApplySpellcheckAttributePluginValue } from './apply-spellcheck-plugin'
-import { SpellcheckTogglerSettings } from 'src/settings'
+import {
+    ApplySpellcheckAttributePluginValue,
+    checkNodeEligibility,
+} from './apply-spellcheck-plugin'
 
 class HtmlCommentSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    protected nodeName: string = 'comment'
-    protected settingsKey: keyof SpellcheckTogglerSettings = 'htmlComments'
+    protected isNodeEligible(node: SyntaxNodeRef): boolean {
+        if (!node.type.name.startsWith('comment')) return false
+
+        return checkNodeEligibility('htmlComments')
+    }
 }
 
 export const htmlCommentSpellcheckPluginValue = ViewPlugin.fromClass(

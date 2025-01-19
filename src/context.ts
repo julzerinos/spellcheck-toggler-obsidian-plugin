@@ -7,7 +7,7 @@ export interface SpellcheckContext {
     settings: SpellcheckTogglerSettings
 }
 
-const spellcheckContext: SpellcheckContext = {
+let spellcheckContext: SpellcheckContext = {
     file: null,
     frontmatter: null,
     settings: defaultSettings,
@@ -16,7 +16,7 @@ const spellcheckContext: SpellcheckContext = {
 export const updateSpellcheckContext = (
     partialContext: Partial<SpellcheckContext>,
 ): void => {
-    Object.assign(spellcheckContext, partialContext)
+    spellcheckContext = { ...spellcheckContext, ...partialContext }
 }
 
 export const getSpellcheckContextProperty = <T extends keyof SpellcheckContext>(

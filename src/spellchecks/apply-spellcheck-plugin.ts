@@ -17,8 +17,6 @@ import {
 
 export class ApplySpellcheckAttributePluginValue implements PluginValue {
     decorations: DecorationSet
-    protected nodeName: string
-    protected settingsKey: keyof SpellcheckTogglerSettings
 
     constructor(view: EditorView) {
         this.decorations = this.buildDecorations(view)
@@ -29,36 +27,7 @@ export class ApplySpellcheckAttributePluginValue implements PluginValue {
         this.decorations = this.buildDecorations(update.view)
     }
 
-    isNodeEligible?(node: SyntaxNodeRef): boolean {
-        if (!node.type.name.startsWith(this.nodeName)) return false
-
-        const frontmatter = getSpellcheckContextProperty('frontmatter')
-        const override =
-            getSpellcheckContextProperty('settings')[this.settingsKey]
-                .frontmatterOverride
-
-        const isOverrideInFrontmatter =
-            frontmatter !== null &&
-            override !== undefined &&
-            override in frontmatter
-
-        switch (
-            getSpellcheckContextProperty('settings')[this.settingsKey].behaviour
-        ) {
-            case SpellcheckBehaviourOption.GLOBAL:
-                return true
-            case SpellcheckBehaviourOption.OPT_IN:
-                return (
-                    isOverrideInFrontmatter && frontmatter[override] === false
-                )
-            case SpellcheckBehaviourOption.OPT_OUT:
-                return (
-                    !isOverrideInFrontmatter || frontmatter[override] === false
-                )
-        }
-
-        return false
-    }
+    protected isNodeEligible?(node: SyntaxNodeRef): boolean
 
     buildDecorations(view: EditorView): DecorationSet {
         const builder = new RangeSetBuilder<Decoration>()
@@ -80,4 +49,29 @@ export class ApplySpellcheckAttributePluginValue implements PluginValue {
 
         return builder.finish()
     }
+}
+
+export const checkNodeEligibility = (
+    settingsKey: keyof SpellcheckTogglerSettings,
+) => {
+    const frontmatter = getSpellcheckContextProperty('frontmatter')
+    const override =
+        getSpellcheckContextProperty('settings')[settingsKey]
+            .frontmatterOverride
+
+    const isOverrideInFrontmatter =
+        frontmatter !== null &&
+        override !== undefined &&
+        override in frontmatter
+
+    switch (getSpellcheckContextProperty('settings')[settingsKey].behaviour) {
+        case SpellcheckBehaviourOption.GLOBAL:
+            return true
+        case SpellcheckBehaviourOption.OPT_IN:
+            return isOverrideInFrontmatter && frontmatter[override] === false
+        case SpellcheckBehaviourOption.OPT_OUT:
+            return !isOverrideInFrontmatter || frontmatter[override] === false
+    }
+
+    return false
 }

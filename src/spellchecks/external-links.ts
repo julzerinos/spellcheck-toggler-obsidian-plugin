@@ -1,11 +1,17 @@
 import { ViewPlugin } from '@codemirror/view'
+import { SyntaxNodeRef } from '@lezer/common'
 
-import { ApplySpellcheckAttributePluginValue } from './apply-spellcheck-plugin'
-import { SpellcheckTogglerSettings } from 'src/settings'
+import {
+    ApplySpellcheckAttributePluginValue,
+    checkNodeEligibility,
+} from './apply-spellcheck-plugin'
 
 class ExternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    protected nodeName: string = 'link'
-    protected settingsKey: keyof SpellcheckTogglerSettings = 'externalLinks'
+    protected isNodeEligible(node: SyntaxNodeRef): boolean {
+        if (!node.type.name.startsWith('link')) return false
+
+        return checkNodeEligibility('externalLinks')
+    }
 }
 
 export const externalLinkSpellcheckViewPlugin = ViewPlugin.fromClass(

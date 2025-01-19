@@ -3,7 +3,6 @@ import { Extension } from '@codemirror/state'
 
 import {
     SpellcheckBehaviourOption,
-    SpellcheckOption,
     SpellcheckTogglerSettingTab,
     SpellcheckTogglerSettings,
     defaultSettings,
@@ -15,6 +14,7 @@ import {
 } from './spellchecks'
 import { updateSpellcheckContext } from './context'
 import { validateAndMigrateSettings } from './migration'
+import { anyNodeSpellcheckPluginValue } from './spellchecks/any-node'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -59,6 +59,12 @@ export class SpellcheckTogglerPlugin extends Plugin {
             SpellcheckBehaviourOption.DEFAULT
         )
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
+
+        if (
+            this.settings.anyNode.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
+            this.editorExtensions.push(anyNodeSpellcheckPluginValue)
     }
 
     refreshExtensions() {
@@ -72,7 +78,8 @@ export class SpellcheckTogglerPlugin extends Plugin {
 
         updateSpellcheckContext({
             file,
-            frontmatter: this.app.metadataCache.getFileCache(file)?.frontmatter,
+            frontmatter:
+                this.app.metadataCache.getFileCache(file)?.frontmatter ?? null,
         })
     }
 
