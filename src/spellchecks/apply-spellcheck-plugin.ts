@@ -35,9 +35,11 @@ export class ApplySpellcheckAttributePluginValue implements PluginValue {
             attributes: { spellcheck: 'false' },
         })
 
+        const adds = [] as { from: number; to: number }[]
+
         const enter = (node: SyntaxNodeRef) => {
             if (this.isNodeEligible?.(node))
-                builder.add(node.from, node.to, markSpellcheckFalse)
+                adds.push({ from: node.from, to: node.to })
         }
 
         for (let { from, to } of view.visibleRanges)
@@ -46,6 +48,14 @@ export class ApplySpellcheckAttributePluginValue implements PluginValue {
                 to,
                 enter,
             })
+
+        adds.sort((a, b) => a.from - b.from)
+        for (const { from, to } of adds) {
+            console.debug(
+                `[spellcheck-toggler] Set spellcheck to false for node range [ ${from}, ${to} ]`,
+            )
+            builder.add(from, to, markSpellcheckFalse)
+        }
 
         return builder.finish()
     }
