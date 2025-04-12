@@ -34,8 +34,8 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
-    emphasis: { behaviour: SpellcheckBehaviourOption.GLOBAL },
-    strong: { behaviour: SpellcheckBehaviourOption.GLOBAL },
+    emphasis: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    strong: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
