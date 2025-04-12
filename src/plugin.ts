@@ -8,9 +8,11 @@ import {
     defaultSettings,
 } from './settings'
 import {
+    emphasisSpellcheckPluginValue,
     externalLinkSpellcheckViewPlugin,
     htmlCommentSpellcheckPluginValue,
     internalLinkSpellcheckViewPlugin,
+    strongSpellcheckPluginValue,
 } from './spellchecks'
 import { updateSpellcheckContext } from './context'
 import { validateAndMigrateSettings } from './migration'
@@ -58,6 +60,17 @@ export class SpellcheckTogglerPlugin extends Plugin {
             SpellcheckBehaviourOption.DEFAULT
         )
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
+
+        if (
+            this.settings.emphasis.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
+            this.editorExtensions.push(emphasisSpellcheckPluginValue)
+
+        if (
+            this.settings.strong.behaviour !== SpellcheckBehaviourOption.DEFAULT
+        )
+            this.editorExtensions.push(strongSpellcheckPluginValue)
 
         if (
             this.settings.anyNode.behaviour !==

@@ -25,6 +25,8 @@ export interface SpellcheckTogglerSettings {
     internalLinks: SpellcheckOption
     htmlComments: SpellcheckOption
     anyNode: SpellcheckOption
+    emphasis: SpellcheckOption
+    strong: SpellcheckOption
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
@@ -32,6 +34,8 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    emphasis: { behaviour: SpellcheckBehaviourOption.GLOBAL },
+    strong: { behaviour: SpellcheckBehaviourOption.GLOBAL },
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
@@ -177,6 +181,20 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             'Html comment option',
             'Toggle spellcheck underline for any text inside an html comment block.',
             '<-- text -->',
+        )
+
+        createSpellcheckOptionDisplay(
+            'emphasis',
+            'Italics (emphasis) node option',
+            'Toggle spellcheck for italics (emphasis) text.',
+            '*text*',
+        )
+
+        createSpellcheckOptionDisplay(
+            'strong',
+            'Bolded (strong) node option',
+            'Toggle spellcheck for bolded (strong) text.',
+            '**text**',
         )
 
         createSpellcheckOptionDisplay(
