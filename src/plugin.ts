@@ -17,6 +17,7 @@ import {
 import { updateSpellcheckContext } from './context'
 import { validateAndMigrateSettings } from './migration'
 import { anyNodeSpellcheckPluginValue } from './spellchecks/any-node'
+import { blockQuoteSpellcheckPluginValue } from './spellchecks/blockquote'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -60,6 +61,12 @@ export class SpellcheckTogglerPlugin extends Plugin {
             SpellcheckBehaviourOption.DEFAULT
         )
             this.editorExtensions.push(htmlCommentSpellcheckPluginValue)
+
+        if (
+            this.settings.blockquote.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
+            this.editorExtensions.push(blockQuoteSpellcheckPluginValue)
 
         if (
             this.settings.emphasis.behaviour !==

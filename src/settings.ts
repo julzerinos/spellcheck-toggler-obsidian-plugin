@@ -27,6 +27,7 @@ export interface SpellcheckTogglerSettings {
     anyNode: SpellcheckOption
     emphasis: SpellcheckOption
     strong: SpellcheckOption
+    blockquote: SpellcheckOption
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
@@ -36,6 +37,7 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     emphasis: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     strong: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    blockquote: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
@@ -181,6 +183,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             'Html comment option',
             'Toggle spellcheck underline for any text inside an html comment block.',
             '<-- text -->',
+        )
+
+        createSpellcheckOptionDisplay(
+            'blockquote',
+            'Blockquote node option',
+            'Toggle spellcheck for text inside block quotes.',
+            '>text',
         )
 
         createSpellcheckOptionDisplay(

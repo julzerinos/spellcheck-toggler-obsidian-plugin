@@ -12,6 +12,9 @@ Originally created to disable spellcheck underlining for links in the editing vi
     -   External links
     -   Internal links
     -   HTML comments
+    -   Block quotes
+    -   Emphasis (italic)
+    -   Strong (bold)
     -   Entire-file toggle
 -   Robust behaviour per-file toggle control, with user-set frontmatter properties
 -   Modules - each toggle can be controlled from the plugin setting tab to customize for your use case.
