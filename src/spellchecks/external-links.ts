@@ -7,8 +7,8 @@ import {
 } from './apply-spellcheck-plugin'
 
 class ExternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    protected isNodeEligible(node: SyntaxNodeRef): boolean {
-        if (!node.type.name.startsWith('link')) return false
+    protected isNodeEligible(node: SyntaxNodeRef): boolean {        
+        if (node.type.name.match(/^link|.*_link$/) === null) return false
 
         return checkNodeEligibility('externalLinks')
     }

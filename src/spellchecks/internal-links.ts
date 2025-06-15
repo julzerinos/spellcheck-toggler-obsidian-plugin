@@ -8,7 +8,7 @@ import {
 
 class InternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
     protected isNodeEligible(node: SyntaxNodeRef): boolean {
-        if (!node.type.name.startsWith('hmd-internal-link')) return false
+        if (!node.type.name.contains('hmd-internal-link')) return false
 
         return checkNodeEligibility('internalLinks')
     }
