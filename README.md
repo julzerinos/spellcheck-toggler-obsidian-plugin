@@ -32,10 +32,5 @@ You can tweak each spellcheck option individually, either entirely ignoring that
 
 Configure spellchecking options. The behaviour of a spellcheck option is defined as follows:
   - "Always spellcheck": the editor default behaviour will be applied (the plugin is not active for the option).
-  - "Opt-in disable": explicitly use the defined frontmatter override property to disable spellchecking in applicable files, otherwise in files without the property apply the editor default (spellcheck) for the option.
-  - "Opt-out disable": explicitly use the defined frontmatter override property to enable spellchecking in applicable files, otherwise in files without the property do not spellcheck the option.
+  - "Frontmatter": explicitly use the defined frontmatter override property to toggle spellchecking in a given file, otherwise use a fallback behavior in files without the property.
   - "Never spellcheck": do not use spellcheck in any file for the option.`
-
-### Option behaviours example
-
-![](https://github.com/julzerinos/spellcheck-toggler-obsidian-plugin/blob/assets/opt-behaviours.png?raw=true)

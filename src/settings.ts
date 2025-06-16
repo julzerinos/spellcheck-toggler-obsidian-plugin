@@ -3,21 +3,24 @@ import { SpellcheckTogglerPlugin } from './plugin'
 
 export enum SpellcheckBehaviourOption {
     DEFAULT = 'default',
-    OPT_IN = 'opt-in',
-    OPT_OUT = 'opt-out',
+    FRONTMATTER = 'frontmatter',
     GLOBAL = 'global',
 }
 
+export type BaseSpellcheckBehaviourOption =
+    | SpellcheckBehaviourOption.DEFAULT
+    | SpellcheckBehaviourOption.GLOBAL
+
 const SpellcheckBehaviourOptionDisplay = {
     [SpellcheckBehaviourOption.DEFAULT]: 'Always spellcheck',
-    [SpellcheckBehaviourOption.OPT_IN]: 'Opt-in disable',
-    [SpellcheckBehaviourOption.OPT_OUT]: 'Opt-out disable',
+    [SpellcheckBehaviourOption.FRONTMATTER]: 'Use frontmatter',
     [SpellcheckBehaviourOption.GLOBAL]: 'Never spellcheck',
 }
 
 export interface SpellcheckOption {
     behaviour: SpellcheckBehaviourOption
     frontmatterOverride?: string
+    frontmatterFallback?: BaseSpellcheckBehaviourOption
 }
 
 export interface SpellcheckTogglerSettings {
@@ -78,14 +81,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 })
             }
 
-            const behaviourDropdownSetting = new Setting(
-                settingContainer,
-            ).setDesc('Spellchecking behaviour')
+            const frontmatterDrawer = document.createElement('div')
+            frontmatterDrawer.className = 'frontmatter-drawer'
 
-            const frontmatterOverrideTextSetting = new Setting(settingContainer)
-                .setDesc('Frontmatter override property')
-                .setTooltip(
-                    'Define the (boolean) frontmatter property which controls the spellcheck behaviour for the respective file.',
+            new Setting(frontmatterDrawer)
+                .setName('Frontmatter override property')
+                .setDesc(
+                    'Define the (boolean) frontmatter property which controls the spellcheck behaviour for a file.',
                 )
                 .addText((text) =>
                     text
@@ -106,7 +108,32 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                         ),
                 )
 
-            frontmatterOverrideTextSetting.settingEl.toggleClass(
+            new Setting(frontmatterDrawer)
+                .setName('Fallback behavior')
+                .setDesc(
+                    'Select the spellcheck fallback behavior for the node in files where the frontmatter property is absent.',
+                )
+                .addDropdown((dropdown) => {
+                    const { frontmatter, ...filteredOptions } =
+                        SpellcheckBehaviourOptionDisplay
+                    dropdown
+                        .addOptions(filteredOptions)
+                        .onChange((frontmatterFallback) => {
+                            this.plugin.saveSettings({
+                                [optionsKey]: {
+                                    ...this.plugin.settings[optionsKey],
+                                    frontmatterFallback: frontmatterFallback,
+                                },
+                            })
+                        })
+                        .setValue(
+                            this.plugin.settings[optionsKey]
+                                .frontmatterFallback ??
+                                SpellcheckBehaviourOption.DEFAULT,
+                        )
+                })
+
+            frontmatterDrawer.toggleClass(
                 'hidden',
                 [
                     SpellcheckBehaviourOption.DEFAULT,
@@ -114,25 +141,32 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 ].includes(this.plugin.settings[optionsKey].behaviour),
             )
 
-            behaviourDropdownSetting.addDropdown((dropdown) => {
-                dropdown.addOptions(SpellcheckBehaviourOptionDisplay)
-                dropdown.onChange((behaviour) => {
-                    this.plugin.saveSettings({
-                        [optionsKey]: {
-                            ...this.plugin.settings[optionsKey],
-                            behaviour,
-                        },
-                    })
-                    frontmatterOverrideTextSetting.settingEl.toggleClass(
-                        'hidden',
-                        [
-                            SpellcheckBehaviourOption.DEFAULT,
-                            SpellcheckBehaviourOption.GLOBAL,
-                        ].includes(this.plugin.settings[optionsKey].behaviour),
-                    )
-                })
-                dropdown.setValue(this.plugin.settings[optionsKey].behaviour)
-            })
+            new Setting(settingContainer)
+                .setName('Spellchecking behaviour')
+                .addDropdown((dropdown) =>
+                    dropdown
+                        .addOptions(SpellcheckBehaviourOptionDisplay)
+                        .onChange((behaviour) => {
+                            this.plugin.saveSettings({
+                                [optionsKey]: {
+                                    ...this.plugin.settings[optionsKey],
+                                    behaviour,
+                                },
+                            })
+                            frontmatterDrawer.toggleClass(
+                                'hidden',
+                                [
+                                    SpellcheckBehaviourOption.DEFAULT,
+                                    SpellcheckBehaviourOption.GLOBAL,
+                                ].includes(
+                                    this.plugin.settings[optionsKey].behaviour,
+                                ),
+                            )
+                        })
+                        .setValue(this.plugin.settings[optionsKey].behaviour),
+                )
+
+            settingContainer.appendChild(frontmatterDrawer)
         }
 
         const legendContainer = containerEl.createDiv({
@@ -152,11 +186,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             cls: 'setting-item-target-label',
         })
         list.createEl('li', {
-            text: `     "Opt-in disable": explicitly use the defined frontmatter override property to disable spellchecking in applicable files, otherwise in files without the property apply the editor default (spellcheck) for the option.`,
-            cls: 'setting-item-target-label',
-        })
-        list.createEl('li', {
-            text: `     "Opt-out disable": explicitly use the defined frontmatter override property to enable spellchecking in applicable files, otherwise in files without the property do not spellcheck the option.`,
+            text: `     "Use frontmatter": use the defined frontmatter property to toggle spellchecking per file.`,
             cls: 'setting-item-target-label',
         })
         list.createEl('li', {
@@ -209,7 +239,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
         createSpellcheckOptionDisplay(
             'anyNode',
             'Any text node option',
-            'Toggle spellcheck for any text node type. Recommended use with "Opt-in disable" behaviour to target specifc files. With the "Never spellcheck" behaviour, this option will disable spellcheck for all text in every file.',
+            'Toggle spellcheck for any text node type. Recommended use with "Opt-in disable" behaviour to target specific files. With the "Never spellcheck" behaviour, this option will disable spellcheck for all text in every file.',
             '*',
         )
     }
