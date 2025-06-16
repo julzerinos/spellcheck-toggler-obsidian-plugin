@@ -34,34 +34,13 @@ export interface SpellcheckTogglerSettings {
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
-    externalLinks: {
-        behaviour: SpellcheckBehaviourOption.GLOBAL,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    internalLinks: {
-        behaviour: SpellcheckBehaviourOption.GLOBAL,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    htmlComments: {
-        behaviour: SpellcheckBehaviourOption.DEFAULT,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    anyNode: {
-        behaviour: SpellcheckBehaviourOption.DEFAULT,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    emphasis: {
-        behaviour: SpellcheckBehaviourOption.DEFAULT,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    strong: {
-        behaviour: SpellcheckBehaviourOption.DEFAULT,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
-    blockquote: {
-        behaviour: SpellcheckBehaviourOption.DEFAULT,
-        frontmatterFallback: SpellcheckBehaviourOption.DEFAULT,
-    },
+    externalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
+    internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
+    htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    emphasis: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    strong: { behaviour: SpellcheckBehaviourOption.DEFAULT },
+    blockquote: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
@@ -149,7 +128,8 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                         })
                         .setValue(
                             this.plugin.settings[optionsKey]
-                                .frontmatterFallback ?? SpellcheckBehaviourOption.DEFAULT,
+                                .frontmatterFallback ??
+                                SpellcheckBehaviourOption.DEFAULT,
                         )
                 })
 

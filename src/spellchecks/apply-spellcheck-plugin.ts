@@ -82,11 +82,12 @@ export const checkNodeEligibility = (
                 getSpellcheckContextProperty('settings')[settingsKey]
                     .frontmatterFallback
 
-            return (
-                (isOverrideInFrontmatter && frontmatter[override] === false) ||
-                (!isOverrideInFrontmatter &&
-                    fallback === SpellcheckBehaviourOption.GLOBAL)
-            )
+            const isOverrideFalse =
+                isOverrideInFrontmatter && frontmatter[override] === false
+            const isFallbackDisable =
+                !isOverrideInFrontmatter &&
+                fallback === SpellcheckBehaviourOption.GLOBAL
+            return isOverrideFalse || isFallbackDisable
     }
 
     return false
