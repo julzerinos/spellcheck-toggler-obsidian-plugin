@@ -77,10 +77,17 @@ export const checkNodeEligibility = (
     switch (getSpellcheckContextProperty('settings')[settingsKey].behaviour) {
         case SpellcheckBehaviourOption.GLOBAL:
             return true
-        case SpellcheckBehaviourOption.OPT_IN:
-            return isOverrideInFrontmatter && frontmatter[override] === false
-        case SpellcheckBehaviourOption.OPT_OUT:
-            return !isOverrideInFrontmatter || frontmatter[override] === false
+        case SpellcheckBehaviourOption.FRONTMATTER:
+            const fallback =
+                getSpellcheckContextProperty('settings')[settingsKey]
+                    .frontmatterFallback
+
+            // TODO test the booleans
+            return (
+                (isOverrideInFrontmatter && frontmatter[override] === false) ||
+                (!isOverrideInFrontmatter &&
+                    fallback == SpellcheckBehaviourOption.GLOBAL)
+            )
     }
 
     return false
