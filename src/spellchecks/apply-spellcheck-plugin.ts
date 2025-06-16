@@ -82,11 +82,10 @@ export const checkNodeEligibility = (
                 getSpellcheckContextProperty('settings')[settingsKey]
                     .frontmatterFallback
 
-            // TODO test the booleans
             return (
                 (isOverrideInFrontmatter && frontmatter[override] === false) ||
                 (!isOverrideInFrontmatter &&
-                    fallback == SpellcheckBehaviourOption.GLOBAL)
+                    fallback === SpellcheckBehaviourOption.GLOBAL)
             )
     }
 

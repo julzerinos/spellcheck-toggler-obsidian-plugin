@@ -7,7 +7,7 @@ export enum SpellcheckBehaviourOption {
     GLOBAL = 'global',
 }
 
-type BaseSpellcheckBehaviourOption =
+export type BaseSpellcheckBehaviourOption =
     | SpellcheckBehaviourOption.DEFAULT
     | SpellcheckBehaviourOption.GLOBAL
 
@@ -20,7 +20,7 @@ const SpellcheckBehaviourOptionDisplay = {
 export interface SpellcheckOption {
     behaviour: SpellcheckBehaviourOption
     frontmatterOverride?: string
-    frontmatterFallback: BaseSpellcheckBehaviourOption
+    frontmatterFallback?: BaseSpellcheckBehaviourOption
 }
 
 export interface SpellcheckTogglerSettings {
@@ -149,7 +149,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                         })
                         .setValue(
                             this.plugin.settings[optionsKey]
-                                .frontmatterFallback,
+                                .frontmatterFallback ?? SpellcheckBehaviourOption.DEFAULT,
                         )
                 })
 
