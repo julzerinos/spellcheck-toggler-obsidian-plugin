@@ -65,19 +65,21 @@ export const checkNodeEligibility = (
     settingsKey: keyof SpellcheckTogglerSettings,
 ) => {
     const frontmatter = getSpellcheckContextProperty('frontmatter')
-    const override =
-        getSpellcheckContextProperty('settings')[settingsKey]
-            .frontmatterOverride
-
-    const isOverrideInFrontmatter =
-        frontmatter !== null &&
-        override !== undefined &&
-        override in frontmatter
 
     switch (getSpellcheckContextProperty('settings')[settingsKey].behaviour) {
+        case SpellcheckBehaviourOption.DEFAULT:
+            return false
         case SpellcheckBehaviourOption.GLOBAL:
             return true
         case SpellcheckBehaviourOption.FRONTMATTER:
+            const override =
+                getSpellcheckContextProperty('settings')[settingsKey]
+                    .frontmatterOverride
+
+            const isOverrideInFrontmatter =
+                frontmatter !== null &&
+                override !== undefined &&
+                override in frontmatter
             const fallback =
                 getSpellcheckContextProperty('settings')[settingsKey]
                     .frontmatterFallback
@@ -87,6 +89,7 @@ export const checkNodeEligibility = (
             const isFallbackDisable =
                 !isOverrideInFrontmatter &&
                 fallback === SpellcheckBehaviourOption.GLOBAL
+
             return isOverrideFalse || isFallbackDisable
     }
 
