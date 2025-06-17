@@ -1,5 +1,5 @@
 import { EventRef, Plugin, TFile } from 'obsidian'
-import { Extension } from '@codemirror/state'
+import { Annotation, Extension } from '@codemirror/state'
 
 import {
     SpellcheckBehaviourOption,
@@ -14,7 +14,10 @@ import {
     internalLinkSpellcheckViewPlugin,
     strongSpellcheckPluginValue,
 } from './spellchecks'
-import { updateSpellcheckContext } from './context'
+import {
+    getSpellcheckContextProperty,
+    updateSpellcheckContext,
+} from './context'
 import { validateAndMigrateSettings } from './migration'
 import { anyNodeSpellcheckPluginValue } from './spellchecks/any-node'
 import { blockQuoteSpellcheckPluginValue } from './spellchecks/blockquote'
@@ -79,11 +82,11 @@ export class SpellcheckTogglerPlugin extends Plugin {
         )
             this.editorExtensions.push(strongSpellcheckPluginValue)
 
-        if (
-            this.settings.anyNode.behaviour !==
-            SpellcheckBehaviourOption.DEFAULT
-        )
-            this.editorExtensions.push(anyNodeSpellcheckPluginValue)
+        // if (
+        //     this.settings.anyNode.behaviour !==
+        //     SpellcheckBehaviourOption.DEFAULT
+        // )
+        //     this.editorExtensions.push(anyNodeSpellcheckPluginValue)
     }
 
     refreshExtensions() {
@@ -100,6 +103,51 @@ export class SpellcheckTogglerPlugin extends Plugin {
             frontmatter:
                 this.app.metadataCache.getFileCache(file)?.frontmatter ?? null,
         })
+
+        let globalSpellcheckFlag = true
+
+        const anyNodeOption =
+            getSpellcheckContextProperty('settings')['anyNode']
+
+        switch (anyNodeOption.behaviour) {
+            case SpellcheckBehaviourOption.GLOBAL:
+                globalSpellcheckFlag = false
+                break
+            case SpellcheckBehaviourOption.FRONTMATTER:
+                const frontmatter = getSpellcheckContextProperty('frontmatter')
+                const isOverrideInFrontmatter =
+                    frontmatter !== null &&
+                    anyNodeOption.frontmatterOverride !== undefined &&
+                    anyNodeOption.frontmatterOverride in frontmatter
+
+                const isOverrideTrue =
+                    isOverrideInFrontmatter &&
+                    frontmatter[anyNodeOption.frontmatterOverride!] === true
+                const isFallbackDefault =
+                    !isOverrideInFrontmatter &&
+                    anyNodeOption.frontmatterFallback !==
+                        SpellcheckBehaviourOption.GLOBAL
+
+                globalSpellcheckFlag = isOverrideTrue || isFallbackDefault
+                break
+        }
+
+        const content =
+            this.app.workspace.containerEl.querySelector('.cm-content')
+
+        const attributeObserver = new MutationObserver((_, observer) => {
+            content!.setAttribute('spellcheck', String(globalSpellcheckFlag))
+            observer.disconnect()
+        })
+
+        content!.setAttribute('spellcheck', String(globalSpellcheckFlag))
+        attributeObserver.observe(content!, {
+            attributes: true,
+            attributeOldValue: true,
+            attributeFilter: ['spellcheck'],
+        })
+
+        // TODO react to change
     }
 
     async onload(): Promise<void> {

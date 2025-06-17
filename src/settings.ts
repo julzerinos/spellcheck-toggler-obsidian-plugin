@@ -238,8 +238,8 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
 
         createSpellcheckOptionDisplay(
             'anyNode',
-            'Any text node option',
-            'Toggle spellcheck for any text node type. Recommended use with "Opt-in disable" behaviour to target specific files. With the "Never spellcheck" behaviour, this option will disable spellcheck for all text in every file.',
+            'Per file option',
+            'Toggle spellcheck for an entire file. With "Never spellcheck", spellchecking is disabled for all files.',
             '*',
         )
     }
