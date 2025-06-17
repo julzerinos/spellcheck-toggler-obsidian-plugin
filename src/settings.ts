@@ -117,7 +117,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                     const { frontmatter, ...filteredOptions } =
                         SpellcheckBehaviourOptionDisplay
                     dropdown
-                        .addOptions(filteredOptions)
+                        .addOptions({... filteredOptions})
                         .onChange((frontmatterFallback) => {
                             this.plugin.saveSettings({
                                 [optionsKey]: {
