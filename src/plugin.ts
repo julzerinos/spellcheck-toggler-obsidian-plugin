@@ -1,4 +1,4 @@
-import { EventRef, Plugin, TFile } from 'obsidian'
+import { EventRef, Plugin, TFile, parseFrontMatterStringArray } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
@@ -136,8 +136,6 @@ export class SpellcheckTogglerPlugin extends Plugin {
     }
 
     onFileOpen(file: TFile | null) {
-        console.log('[spellcheck-toggler] opened file')
-
         if (file === null) return
 
         const metadata = this.app.metadataCache.getFileCache(file)
@@ -151,23 +149,23 @@ export class SpellcheckTogglerPlugin extends Plugin {
     }
 
     onFileModify(file: TFile | null) {
-        console.log('[spellcheck-toggler] modified file')
-
         if (
+            !this.settings.useReactiveFrontmatter ||
             file === null ||
             this.app.workspace.getActiveFile()?.basename !== file.basename
         )
             return
 
+            
         this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-            const didDiffer = updateFrontmatterWithDifference(frontmatter)
-            if (!didDiffer) return
+            // const didDiffer = updateFrontmatterWithDifference(frontmatter)
+            // if (!didDiffer) return
 
-            this.handleSpellcheckAttribute()
-            const editor = this.app.workspace.activeEditor?.editor
-            if (!editor) return
-            editor.replaceRange(' ', editor.getCursor())
-            editor.undo()
+            // this.handleSpellcheckAttribute()
+            // const editor = this.app.workspace.activeEditor?.editor
+            // if (!editor) return
+            // editor.replaceRange(' ', editor.getCursor())
+            // editor.undo()
         })
     }
 

@@ -24,6 +24,7 @@ export interface SpellcheckOption {
 }
 
 export interface SpellcheckTogglerSettings {
+    useReactiveFrontmatter: boolean
     externalLinks: SpellcheckOption
     internalLinks: SpellcheckOption
     htmlComments: SpellcheckOption
@@ -34,6 +35,7 @@ export interface SpellcheckTogglerSettings {
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
+    useReactiveFrontmatter: false,
     externalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
@@ -42,6 +44,15 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     strong: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     blockquote: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
+
+type OptionKey =
+    | 'externalLinks'
+    | 'internalLinks'
+    | 'htmlComments'
+    | 'anyNode'
+    | 'emphasis'
+    | 'strong'
+    | 'blockquote'
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
     plugin: SpellcheckTogglerPlugin
@@ -56,7 +67,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
         containerEl.empty()
 
         const createSpellcheckOptionDisplay = (
-            optionsKey: keyof SpellcheckTogglerSettings,
+            optionKey: OptionKey,
             name: string,
             description: string,
             targetFormat?: string,
@@ -81,8 +92,11 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 })
             }
 
-            const frontmatterDrawer = document.createElement('div')
-            frontmatterDrawer.className = 'frontmatter-drawer'
+            const frontmatterDrawer = settingContainer.createDiv({
+                cls: 'frontmatter-drawer',
+            })
+            //  document.createElement('div')
+            // frontmatterDrawer.className = 'frontmatter-drawer'
 
             new Setting(frontmatterDrawer)
                 .setName('Frontmatter override property')
@@ -92,13 +106,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 .addText((text) =>
                     text
                         .setValue(
-                            this.plugin.settings[optionsKey]
+                            this.plugin.settings[optionKey]
                                 .frontmatterOverride ?? '',
                         )
                         .onChange((frontmatterOverride) =>
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     frontmatterOverride:
                                         frontmatterOverride.length
                                             ? frontmatterOverride
@@ -117,17 +131,17 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                     const { frontmatter, ...filteredOptions } =
                         SpellcheckBehaviourOptionDisplay
                     dropdown
-                        .addOptions({... filteredOptions})
+                        .addOptions({ ...filteredOptions })
                         .onChange((frontmatterFallback) => {
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     frontmatterFallback: frontmatterFallback,
                                 },
                             })
                         })
                         .setValue(
-                            this.plugin.settings[optionsKey]
+                            this.plugin.settings[optionKey]
                                 .frontmatterFallback ??
                                 SpellcheckBehaviourOption.DEFAULT,
                         )
@@ -138,7 +152,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 [
                     SpellcheckBehaviourOption.DEFAULT,
                     SpellcheckBehaviourOption.GLOBAL,
-                ].includes(this.plugin.settings[optionsKey].behaviour),
+                ].includes(this.plugin.settings[optionKey].behaviour),
             )
 
             new Setting(settingContainer)
@@ -148,8 +162,8 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                         .addOptions(SpellcheckBehaviourOptionDisplay)
                         .onChange((behaviour) => {
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     behaviour,
                                 },
                             })
@@ -159,11 +173,11 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                                     SpellcheckBehaviourOption.DEFAULT,
                                     SpellcheckBehaviourOption.GLOBAL,
                                 ].includes(
-                                    this.plugin.settings[optionsKey].behaviour,
+                                    this.plugin.settings[optionKey].behaviour,
                                 ),
                             )
                         })
-                        .setValue(this.plugin.settings[optionsKey].behaviour),
+                        .setValue(this.plugin.settings[optionKey].behaviour),
                 )
 
             settingContainer.appendChild(frontmatterDrawer)
@@ -193,6 +207,21 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             text: `     "Never spellcheck": do not use spellcheck in any file for the option.`,
             cls: 'setting-item-target-label',
         })
+
+        new Setting(legendContainer)
+            .setName('Use reactive frontmatter')
+            .setDesc(
+                'Toggle for using reactive frontmatter property for spellchecks. Uses frontmatter processing which applies .',
+            )
+            .addToggle((t) =>
+                t
+                    .setValue(this.plugin.settings.useReactiveFrontmatter)
+                    .onChange((use) =>
+                        this.plugin.saveSettings({
+                            useReactiveFrontmatter: use,
+                        }),
+                    ),
+            )
 
         createSpellcheckOptionDisplay(
             'externalLinks',
