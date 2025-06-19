@@ -43,6 +43,15 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     blockquote: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
+type OptionKey =
+    | 'externalLinks'
+    | 'internalLinks'
+    | 'htmlComments'
+    | 'anyNode'
+    | 'emphasis'
+    | 'strong'
+    | 'blockquote'
+
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
     plugin: SpellcheckTogglerPlugin
 
@@ -56,7 +65,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
         containerEl.empty()
 
         const createSpellcheckOptionDisplay = (
-            optionsKey: keyof SpellcheckTogglerSettings,
+            optionKey: OptionKey,
             name: string,
             description: string,
             targetFormat?: string,
@@ -81,8 +90,9 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 })
             }
 
-            const frontmatterDrawer = document.createElement('div')
-            frontmatterDrawer.className = 'frontmatter-drawer'
+            const frontmatterDrawer = settingContainer.createDiv({
+                cls: 'frontmatter-drawer',
+            })
 
             new Setting(frontmatterDrawer)
                 .setName('Frontmatter override property')
@@ -92,13 +102,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 .addText((text) =>
                     text
                         .setValue(
-                            this.plugin.settings[optionsKey]
+                            this.plugin.settings[optionKey]
                                 .frontmatterOverride ?? '',
                         )
                         .onChange((frontmatterOverride) =>
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     frontmatterOverride:
                                         frontmatterOverride.length
                                             ? frontmatterOverride
@@ -117,17 +127,17 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                     const { frontmatter, ...filteredOptions } =
                         SpellcheckBehaviourOptionDisplay
                     dropdown
-                        .addOptions({... filteredOptions})
+                        .addOptions({ ...filteredOptions })
                         .onChange((frontmatterFallback) => {
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     frontmatterFallback: frontmatterFallback,
                                 },
                             })
                         })
                         .setValue(
-                            this.plugin.settings[optionsKey]
+                            this.plugin.settings[optionKey]
                                 .frontmatterFallback ??
                                 SpellcheckBehaviourOption.DEFAULT,
                         )
@@ -138,7 +148,7 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                 [
                     SpellcheckBehaviourOption.DEFAULT,
                     SpellcheckBehaviourOption.GLOBAL,
-                ].includes(this.plugin.settings[optionsKey].behaviour),
+                ].includes(this.plugin.settings[optionKey].behaviour),
             )
 
             new Setting(settingContainer)
@@ -148,8 +158,8 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                         .addOptions(SpellcheckBehaviourOptionDisplay)
                         .onChange((behaviour) => {
                             this.plugin.saveSettings({
-                                [optionsKey]: {
-                                    ...this.plugin.settings[optionsKey],
+                                [optionKey]: {
+                                    ...this.plugin.settings[optionKey],
                                     behaviour,
                                 },
                             })
@@ -159,11 +169,11 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
                                     SpellcheckBehaviourOption.DEFAULT,
                                     SpellcheckBehaviourOption.GLOBAL,
                                 ].includes(
-                                    this.plugin.settings[optionsKey].behaviour,
+                                    this.plugin.settings[optionKey].behaviour,
                                 ),
                             )
                         })
-                        .setValue(this.plugin.settings[optionsKey].behaviour),
+                        .setValue(this.plugin.settings[optionKey].behaviour),
                 )
 
             settingContainer.appendChild(frontmatterDrawer)
