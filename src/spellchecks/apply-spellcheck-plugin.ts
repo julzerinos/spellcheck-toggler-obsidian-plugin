@@ -50,12 +50,8 @@ export class ApplySpellcheckAttributePluginValue implements PluginValue {
             })
 
         adds.sort((a, b) => a.from - b.from)
-        for (const { from, to } of adds) {
-            console.debug(
-                `[spellcheck-toggler] Set spellcheck to false for node range [ ${from}, ${to} ]`,
-            )
+        for (const { from, to } of adds)
             builder.add(from, to, markSpellcheckFalse)
-        }
 
         return builder.finish()
     }

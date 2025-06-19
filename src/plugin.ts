@@ -1,4 +1,12 @@
-import { EventRef, Plugin, TFile, parseFrontMatterStringArray } from 'obsidian'
+import {
+    EventRef,
+    Plugin,
+    TFile,
+    getFrontMatterInfo,
+    parseFrontMatterAliases,
+    parseFrontMatterEntry,
+    parseFrontMatterStringArray,
+} from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
@@ -150,23 +158,46 @@ export class SpellcheckTogglerPlugin extends Plugin {
 
     onFileModify(file: TFile | null) {
         if (
-            !this.settings.useReactiveFrontmatter ||
             file === null ||
             this.app.workspace.getActiveFile()?.basename !== file.basename
         )
             return
+        ;(async () => {
+            const content = await this.app.vault.cachedRead(file)
+            const frontmatterInfo = getFrontMatterInfo(content)
+            if (!frontmatterInfo.exists) return
 
-            
-        this.app.fileManager.processFrontMatter(file, (frontmatter) => {
-            // const didDiffer = updateFrontmatterWithDifference(frontmatter)
-            // if (!didDiffer) return
+            const overrideKeys =
+                getSpellcheckContextProperty('uniqueOverrideKeys')
+            const frontmatter = {} as { [key: string]: boolean }
 
-            // this.handleSpellcheckAttribute()
-            // const editor = this.app.workspace.activeEditor?.editor
-            // if (!editor) return
-            // editor.replaceRange(' ', editor.getCursor())
-            // editor.undo()
-        })
+            for (const line of frontmatterInfo.frontmatter.split('\n')) {
+                const [property, value] = line.split(':').map((s) => s.trim())
+
+                if (value === undefined || value.length === 0) continue
+
+                const parsedValue =
+                    value === 'true'
+                        ? true
+                        : value === 'false'
+                        ? false
+                        : undefined
+                if (
+                    parsedValue !== undefined &&
+                    overrideKeys.includes(property)
+                )
+                    frontmatter[property] = parsedValue
+            }
+
+            const didDiffer = updateFrontmatterWithDifference(frontmatter)
+            if (!didDiffer) return
+
+            this.handleSpellcheckAttribute()
+            const editor = this.app.workspace.activeEditor?.editor
+            if (!editor) return
+            editor.replaceRange(' ', editor.getCursor())
+            editor.undo()
+        })()
     }
 
     async onload(): Promise<void> {

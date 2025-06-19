@@ -24,7 +24,6 @@ export interface SpellcheckOption {
 }
 
 export interface SpellcheckTogglerSettings {
-    useReactiveFrontmatter: boolean
     externalLinks: SpellcheckOption
     internalLinks: SpellcheckOption
     htmlComments: SpellcheckOption
@@ -35,7 +34,6 @@ export interface SpellcheckTogglerSettings {
 }
 
 export const defaultSettings: SpellcheckTogglerSettings = {
-    useReactiveFrontmatter: false,
     externalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
@@ -95,8 +93,6 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             const frontmatterDrawer = settingContainer.createDiv({
                 cls: 'frontmatter-drawer',
             })
-            //  document.createElement('div')
-            // frontmatterDrawer.className = 'frontmatter-drawer'
 
             new Setting(frontmatterDrawer)
                 .setName('Frontmatter override property')
@@ -207,21 +203,6 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             text: `     "Never spellcheck": do not use spellcheck in any file for the option.`,
             cls: 'setting-item-target-label',
         })
-
-        new Setting(legendContainer)
-            .setName('Use reactive frontmatter')
-            .setDesc(
-                'Toggle for using reactive frontmatter property for spellchecks. Uses frontmatter processing which applies .',
-            )
-            .addToggle((t) =>
-                t
-                    .setValue(this.plugin.settings.useReactiveFrontmatter)
-                    .onChange((use) =>
-                        this.plugin.saveSettings({
-                            useReactiveFrontmatter: use,
-                        }),
-                    ),
-            )
 
         createSpellcheckOptionDisplay(
             'externalLinks',
