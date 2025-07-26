@@ -26,6 +26,7 @@ export interface SpellcheckOption {
 export interface SpellcheckTogglerSettings {
     externalLinks: SpellcheckOption
     internalLinks: SpellcheckOption
+    bareLinks: SpellcheckOption
     htmlComments: SpellcheckOption
     anyNode: SpellcheckOption
     emphasis: SpellcheckOption
@@ -36,6 +37,7 @@ export interface SpellcheckTogglerSettings {
 export const defaultSettings: SpellcheckTogglerSettings = {
     externalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     internalLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
+    bareLinks: { behaviour: SpellcheckBehaviourOption.GLOBAL },
     htmlComments: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     anyNode: { behaviour: SpellcheckBehaviourOption.DEFAULT },
     emphasis: { behaviour: SpellcheckBehaviourOption.DEFAULT },
@@ -43,14 +45,7 @@ export const defaultSettings: SpellcheckTogglerSettings = {
     blockquote: { behaviour: SpellcheckBehaviourOption.DEFAULT },
 }
 
-type OptionKey =
-    | 'externalLinks'
-    | 'internalLinks'
-    | 'htmlComments'
-    | 'anyNode'
-    | 'emphasis'
-    | 'strong'
-    | 'blockquote'
+type OptionKey = keyof SpellcheckTogglerSettings
 
 export class SpellcheckTogglerSettingTab extends PluginSettingTab {
     plugin: SpellcheckTogglerPlugin
@@ -216,6 +211,13 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
             'Wikilinks option',
             'Toggle spellcheck underline for link text in any wikilink.',
             '[[ link text ]]',
+        )
+
+        createSpellcheckOptionDisplay(
+            'bareLinks',
+            'Bare links option',
+            'Toggle spellcheck underline for text in any bare link.',
+            '[text]',
         )
 
         createSpellcheckOptionDisplay(
