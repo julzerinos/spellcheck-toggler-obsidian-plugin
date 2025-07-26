@@ -206,15 +206,15 @@ export class SpellcheckTogglerSettingTab extends PluginSettingTab {
 
         createSpellcheckOptionDisplay(
             'externalLinks',
-            'External links option',
-            'Toggle spellcheck underline for link text in any external link.',
+            'Markdown links option',
+            'Toggle spellcheck underline for link text in any markdown link.',
             '![text](link)',
         )
 
         createSpellcheckOptionDisplay(
             'internalLinks',
-            'Internal links option',
-            'Toggle spellcheck underline for link text in any internal link.',
+            'Wikilinks option',
+            'Toggle spellcheck underline for link text in any wikilink.',
             '[[ link text ]]',
         )
 

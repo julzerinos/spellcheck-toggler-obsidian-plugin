@@ -1,12 +1,4 @@
-import {
-    EventRef,
-    Plugin,
-    TFile,
-    getFrontMatterInfo,
-    parseFrontMatterAliases,
-    parseFrontMatterEntry,
-    parseFrontMatterStringArray,
-} from 'obsidian'
+import { EventRef, Plugin, TFile, getFrontMatterInfo } from 'obsidian'
 import { Extension } from '@codemirror/state'
 
 import {
@@ -17,9 +9,9 @@ import {
 } from './settings'
 import {
     emphasisSpellcheckPluginValue,
-    externalLinkSpellcheckViewPlugin,
+    markdownLinkSpellcheckViewPlugin,
     htmlCommentSpellcheckPluginValue,
-    internalLinkSpellcheckViewPlugin,
+    wikiLinkSpellcheckViewPlugin,
     strongSpellcheckPluginValue,
 } from './spellchecks'
 import {
@@ -60,13 +52,13 @@ export class SpellcheckTogglerPlugin extends Plugin {
             this.settings.internalLinks.behaviour !==
             SpellcheckBehaviourOption.DEFAULT
         )
-            this.editorExtensions.push(internalLinkSpellcheckViewPlugin)
+            this.editorExtensions.push(wikiLinkSpellcheckViewPlugin)
 
         if (
             this.settings.externalLinks.behaviour !==
             SpellcheckBehaviourOption.DEFAULT
         )
-            this.editorExtensions.push(externalLinkSpellcheckViewPlugin)
+            this.editorExtensions.push(markdownLinkSpellcheckViewPlugin)
 
         if (
             this.settings.htmlComments.behaviour !==
