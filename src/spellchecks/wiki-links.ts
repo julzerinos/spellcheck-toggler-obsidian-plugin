@@ -6,7 +6,7 @@ import {
     checkNodeEligibility,
 } from './apply-spellcheck-plugin'
 
-class InternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
+class WikiLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
     protected isNodeEligible(node: SyntaxNodeRef): boolean {
         if (!node.type.name.contains('hmd-internal-link')) return false
 
@@ -14,8 +14,8 @@ class InternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginVa
     }
 }
 
-export const internalLinkSpellcheckViewPlugin = ViewPlugin.fromClass(
-    InternalLinkSpellcheckPluginValue,
+export const wikiLinkSpellcheckViewPlugin = ViewPlugin.fromClass(
+    WikiLinkSpellcheckPluginValue,
     {
         decorations: (pluginValue) => pluginValue.decorations,
     },

@@ -1,5 +1,5 @@
 export { htmlCommentSpellcheckPluginValue } from './html-comments'
-export { externalLinkSpellcheckViewPlugin } from './external-links'
-export { internalLinkSpellcheckViewPlugin } from './internal-links'
+export { markdownLinkSpellcheckViewPlugin } from './markdown-links'
+export { wikiLinkSpellcheckViewPlugin } from './wiki-links'
 export { emphasisSpellcheckPluginValue } from './emphasis'
 export { strongSpellcheckPluginValue } from './strong'

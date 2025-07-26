@@ -6,16 +6,16 @@ import {
     checkNodeEligibility,
 } from './apply-spellcheck-plugin'
 
-class ExternalLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    protected isNodeEligible(node: SyntaxNodeRef): boolean {        
+class MarkdownLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
+    protected isNodeEligible(node: SyntaxNodeRef): boolean {  
         if (node.type.name.match(/^link|.*_link$/) === null) return false
 
         return checkNodeEligibility('externalLinks')
     }
 }
 
-export const externalLinkSpellcheckViewPlugin = ViewPlugin.fromClass(
-    ExternalLinkSpellcheckPluginValue,
+export const markdownLinkSpellcheckViewPlugin = ViewPlugin.fromClass(
+    MarkdownLinkSpellcheckPluginValue,
     {
         decorations: (pluginValue) => pluginValue.decorations,
     },
