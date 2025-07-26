@@ -7,8 +7,12 @@ import {
 } from './apply-spellcheck-plugin'
 
 class MarkdownLinkSpellcheckPluginValue extends ApplySpellcheckAttributePluginValue {
-    protected isNodeEligible(node: SyntaxNodeRef): boolean {  
-        if (node.type.name.match(/^link|.*_link$/) === null) return false
+    protected isNodeEligible(node: SyntaxNodeRef): boolean {
+        if (
+            node.type.name.match(/^link|.*_link$/) === null ||
+            node.type.name.contains('hmd-barelink') // TODO: Collate this into the regex
+        )
+            return false
 
         return checkNodeEligibility('externalLinks')
     }

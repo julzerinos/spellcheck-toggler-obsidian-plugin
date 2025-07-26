@@ -21,6 +21,7 @@ import {
 } from './context'
 import { validateAndMigrateSettings } from './migration'
 import { blockQuoteSpellcheckPluginValue } from './spellchecks/blockquote'
+import { bareLinkSpellcheckPluginValue } from './spellchecks/barelink'
 
 export class SpellcheckTogglerPlugin extends Plugin {
     settings: SpellcheckTogglerSettings
@@ -59,6 +60,12 @@ export class SpellcheckTogglerPlugin extends Plugin {
             SpellcheckBehaviourOption.DEFAULT
         )
             this.editorExtensions.push(markdownLinkSpellcheckViewPlugin)
+
+        if (
+            this.settings.bareLinks.behaviour !==
+            SpellcheckBehaviourOption.DEFAULT
+        )
+            this.editorExtensions.push(bareLinkSpellcheckPluginValue)
 
         if (
             this.settings.htmlComments.behaviour !==
