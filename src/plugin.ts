@@ -120,7 +120,7 @@ export class SpellcheckTogglerPlugin extends Plugin {
                 const isFallbackDefault =
                     !isOverrideInFrontmatter &&
                     anyNodeOption.frontmatterFallback !==
-                        SpellcheckBehaviourOption.GLOBAL
+                    SpellcheckBehaviourOption.GLOBAL
 
                 globalSpellcheckFlag = isOverrideTrue || isFallbackDefault
                 break
@@ -160,8 +160,9 @@ export class SpellcheckTogglerPlugin extends Plugin {
             file === null ||
             this.app.workspace.getActiveFile()?.basename !== file.basename
         )
-            return
-        ;(async () => {
+            return;
+
+        (async () => {
             const content = await this.app.vault.cachedRead(file)
             const frontmatterInfo = getFrontMatterInfo(content)
             if (!frontmatterInfo.exists) return
@@ -179,8 +180,8 @@ export class SpellcheckTogglerPlugin extends Plugin {
                     value === 'true'
                         ? true
                         : value === 'false'
-                        ? false
-                        : undefined
+                            ? false
+                            : undefined
                 if (
                     parsedValue !== undefined &&
                     overrideKeys.includes(property)
@@ -194,8 +195,8 @@ export class SpellcheckTogglerPlugin extends Plugin {
             this.handleSpellcheckAttribute()
             const editor = this.app.workspace.activeEditor?.editor
             if (!editor) return
-            editor.replaceRange(' ', editor.getCursor())
-            editor.undo()
+
+            editor.refresh()
         })()
     }
 
